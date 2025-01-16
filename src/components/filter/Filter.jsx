@@ -29,7 +29,7 @@ function Filter() {
                             placeholder="Search here"
                             className="px-8 py-3 w-full rounded-md bg-violet-0 border-transparent outline-0 text-sm" style={{ backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '', color: mode === 'dark' ? 'white' : '', }} />
                     </div>
-                    <div className="flex items-center justify-between mt-4">
+                    {/* <div className="flex items-center justify-between mt-4">
                         <p className="font-medium">
                             Filters
                         </p>
@@ -55,8 +55,8 @@ function Filter() {
                                 })}
                             </select>
 
-                        </div>
-                    </div>
+                        </div> */}
+                    {/* </div> */}
                 </div>
             </div>
         </div>

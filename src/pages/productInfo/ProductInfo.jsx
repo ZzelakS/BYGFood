@@ -177,7 +177,7 @@ function ProductInfo() {
 
                             <div className="flex">
                                 <span className="title-font font-medium text-2xl text-gray-900">
-                                NGN{products.price}
+                                ₦{products.price}
                                 </span>
                                 <button  onClick={()=>addCart(products)} className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
                                     Add To Cart

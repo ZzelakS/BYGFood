@@ -39,9 +39,9 @@ function Cart() {
     console.log(temp)
   }, [cartItems])
 
-  const shipping = parseInt(500);
+  // const shipping = parseInt(500);
 
-  const grandTotal = shipping + totalAmout;
+  // const grandTotal = shipping + totalAmout;
   // console.log(grandTotal)
 
   /**========================================================================
@@ -52,10 +52,30 @@ function Cart() {
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
+  const [location, setLocation] = useState(""); // New state for location
+  const [shipping, setShipping] = useState(0); // Dynamic shipping fee
+
+  // Define shipping fees for different locations
+const shippingFees = {
+  "Victoria Island": 2000,
+  "Lekki": 2500,
+  "Ikoyi": 2000,
+  "Others": 2500,
+  "Test": 100,
+};
+
+// Update shipping fee dynamically based on location
+const handleLocationChange = (selectedLocation) => {
+  setLocation(selectedLocation);
+  setShipping(shippingFees[selectedLocation] || shippingFees["Others"]);
+};
+
+const grandTotal = shipping + totalAmout;
+
 
   const buyNow = async () => {
     // Validate input fields
-    if ([name, address, email, phoneNumber].some(field => field.trim() === "")) {
+    if ([name, address, email, phoneNumber, location].some(field => field.trim() === "")) {
         return toast.error("All fields are required", {
             position: "top-center",
             autoClose: 1000,
@@ -91,6 +111,7 @@ function Cart() {
             address,
             email,
             phoneNumber,
+            location,
         },
         date: new Date().toLocaleString("en-US", {
             month: "short",
@@ -209,10 +230,12 @@ function Cart() {
               address={address}
               email={email}
               phoneNumber={phoneNumber}
+              location={location}
               setName={setName}
               setAddress={setAddress}
               setEmail={setEmail}
               setPhoneNumber={setPhoneNumber}
+              handleLocationChange={handleLocationChange}
               buyNow={buyNow}
             />
           </div>

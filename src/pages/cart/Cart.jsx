@@ -78,7 +78,7 @@ function Cart() {
         console.error("Error fetching user data: ", error);
         return toast.error("An error occurred. Please log in again.", {
             position: "top-center",
-            autoClose: 2000,
+            autoClose: 1000,
             theme: "colored",
         });
     }
@@ -136,7 +136,7 @@ function Cart() {
                 });
               }
             } else {
-              toast.error("Payment was not successful", { position: "top-center", autoClose: 2000 });
+              toast.error("Payment was not successful", { position: "top-center", autoClose: 1000 });
             }
           },
           onclose: () => {

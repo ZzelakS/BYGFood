@@ -50,12 +50,12 @@ function Cart() {
 
   const [name, setName] = useState("")
   const [address, setAddress] = useState("");
-  const [pincode, setPincode] = useState("")
+  const [email, setEmail] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
 
   const buyNow = async () => {
     // Validate input fields
-    if ([name, address, pincode, phoneNumber].some(field => field.trim() === "")) {
+    if ([name, address, email, phoneNumber].some(field => field.trim() === "")) {
         return toast.error("All fields are required", {
             position: "top-center",
             autoClose: 1000,
@@ -69,19 +69,19 @@ function Cart() {
     }
 
     // Safely fetch user details from localStorage
-    let user;
-    try {
-        const userData = localStorage.getItem("user");
-        if (!userData) throw new Error("User not found in local storage");
-        user = JSON.parse(userData).user;
-    } catch (error) {
-        console.error("Error fetching user data: ", error);
-        return toast.error("An error occurred. Please log in again.", {
-            position: "top-center",
-            autoClose: 1000,
-            theme: "colored",
-        });
-    }
+    // let user;
+    // try {
+    //     const userData = localStorage.getItem("user");
+    //     if (!userData) throw new Error("User not found in local storage");
+    //     user = JSON.parse(userData).user;
+    // } catch (error) {
+    //     console.error("Error fetching user data: ", error);
+    //     return toast.error("An error occurred. Please log in again.", {
+    //         position: "top-center",
+    //         autoClose: 1000,
+    //         theme: "colored",
+    //     });
+    // }
 
     // Construct order information
     const orderInfo = {
@@ -89,7 +89,7 @@ function Cart() {
         addressInfo: {
             name,
             address,
-            pincode,
+            email,
             phoneNumber,
         },
         date: new Date().toLocaleString("en-US", {
@@ -97,8 +97,8 @@ function Cart() {
             day: "2-digit",
             year: "numeric",
         }),
-        email: user.email,
-        userid: user.uid,
+        // email: user.email,
+        // userid: user.uid,
     };
 
     try {
@@ -110,14 +110,14 @@ function Cart() {
           currency: "NGN", // Correct ISO currency code
           payment_options: "card, banktransfer, ussd", // List of payment methods
           customer: {
-            email: user.email,
+            email: email,
             phone_number: phoneNumber,
             name: name,
           },
           customizations: {
             title: "BYG Foods",
             description: "Payment for your order",
-            logo: "https://yourdomain.com/logo.png", // Optional logo URL
+            logo: "https://res.cloudinary.com/danccwm8m/image/upload/354384-200-removebg-preview_ztu3rn.png", // Optional logo URL
           },
           callback: async (response) => {
             if (response.status === "successful") {
@@ -207,11 +207,11 @@ function Cart() {
             <Modal
               name={name}
               address={address}
-              pincode={pincode}
+              email={email}
               phoneNumber={phoneNumber}
               setName={setName}
               setAddress={setAddress}
-              setPincode={setPincode}
+              setEmail={setEmail}
               setPhoneNumber={setPhoneNumber}
               buyNow={buyNow}
             />

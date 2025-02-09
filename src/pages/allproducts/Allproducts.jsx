@@ -121,7 +121,7 @@ function AllProducts() {
                     return (
                       <div
                         key={index}
-                        className="bg-white rounded-lg border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out cursor-pointer"
+                        className="bg-white rounded-lg border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out cursor-pointer w-full max-w-[320px] mx-auto"
                         onClick={() => (window.location.href = `/productinfo/${id}`)} // Clicking anywhere navigates
                       >
                         <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />

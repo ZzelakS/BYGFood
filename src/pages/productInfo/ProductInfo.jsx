@@ -1,207 +1,205 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Layout from '../../components/layout/Layout'
-import myContext from '../../context/data/myContext';
-import { useParams } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { doc, getDoc } from 'firebase/firestore';
-import { toast } from 'react-toastify';
-import { addToCart } from '../../redux/cartSlice';
-import { fireDB } from '../../fireabase/FirebaseConfig';
+import React, { useContext, useEffect, useState } from "react";
+import Layout from "../../components/layout/Layout";
+import myContext from "../../context/data/myContext";
+import { useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { doc, getDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
+import { addToCart, deleteFromCart, clearCart } from "../../redux/cartSlice";
+import { fireDB } from "../../firebase/FirebaseConfig";
+import { useNavigate } from "react-router";
 
 function ProductInfo() {
-    const context = useContext(myContext);
-    const { loading, setLoading } = context;
+  const context = useContext(myContext);
+  const { loading, setLoading } = context;
 
-    const [products, setProducts] = useState('')
-    const params = useParams()
-    // console.log(products.title)
+  const [product, setProduct] = useState(null);
+  const [error, setError] = useState(null);
+  const params = useParams();
 
-    const getProductData = async () => {
-        setLoading(true)
-        try {
-            const productTemp = await getDoc(doc(fireDB, "products", params.id))
-            // console.log(productTemp)
-            setProducts(productTemp.data());
-            // console.log(productTemp.data())
-            setLoading(false)
-        } catch (error) {
-            console.log(error)
-            setLoading(false)
-        }
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const cartItems = useSelector((state) => Array.isArray(state.cart.cart) ? state.cart.cart : []);
+  console.log(cartItems);
+
+  const getProductData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const productTemp = await getDoc(doc(fireDB, "products", params.id));
+      if (productTemp.exists()) {
+        setProduct({ id: productTemp.id, ...productTemp.data() });
+      } else {
+        setError("Product not found");
+        toast.error("Product not found");
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      setError("Failed to fetch product");
+      toast.error("Failed to fetch product");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    getProductData();
+  }, [params.id]);
+
+  const addCart = (product) => {
+    dispatch(addToCart(product));
+    toast.success("Added to cart");
+  };
+  const removeCartItem = (id) => {
+    dispatch(deleteFromCart(id));
+    toast.info("Removed from cart");
+  };
+
+  const clearCartHandler = () => {
+    dispatch(clearCart());
+    toast.info("Cart cleared");
+  };
 
 
-    useEffect(() => {
-        getProductData()
-
-    }, [])
-
-
-
-    const dispatch = useDispatch()
-    const cartItems = useSelector((state) => state.cart)
-    // console.log(cartItems)
-
-    // add to cart
-    const addCart = (products) => {
-        dispatch(addToCart(products))
-        toast.success('add to cart');
-    }
-
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cartItems));
-    }, [cartItems])
-
-
-
-
-    return (
-        <Layout>
-            <section className="text-gray-600 body-font overflow-hidden">
-                <div className="container px-5 py-10 mx-auto">
-                    {products && 
-                    <div className="lg:w-4/5 mx-auto flex flex-wrap">
-                        <img
-                            alt="ecommerce"
-                            className="lg:w-1/3 w-full lg:h-auto  object-cover object-center rounded"
-                            src={products.imageUrl}
-                        />
-                        <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-                            <h2 className="text-sm title-font text-gray-500 tracking-widest">
-                                BYG Food
-                            </h2>
-                            <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
-                                {products.title}
-                            </h1>
-                            <div className="flex mb-4">
-                                <span className="flex items-center">
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-orange-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-orange-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-orange-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="currentColor"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-orange-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <svg
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-4 h-4 text-orange-500"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                    <span className="text-gray-600 ml-3">4 Reviews</span>
-                                </span>
-                                <span className="flex ml-3 pl-3 py-2 border-l-2 border-gray-200 space-x-2s">
-                                    <a className="text-gray-500">
-                                        <svg
-                                            fill="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            className="w-5 h-5"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-                                        </svg>
-                                    </a>
-                                    <a className="text-gray-500">
-                                        <svg
-                                            fill="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            className="w-5 h-5"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                                        </svg>
-                                    </a>
-                                    <a className="text-gray-500">
-                                        <svg
-                                            fill="currentColor"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            className="w-5 h-5"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
-                                        </svg>
-                                    </a>
-                                </span>
-                            </div>
-                            <p className="leading-relaxed border-b-2 mb-5 pb-5">
-                                {products.description}
-                            </p>
-
-                            <div className="flex">
-                                <span className="title-font font-medium text-2xl text-gray-900">
-                                ₦{products.price}
-                                </span>
-                                <button  onClick={()=>addCart(products)} className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
-                                    Add To Cart
-                                </button>
-                                <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
-                                    <svg
-                                        fill="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        className="w-5 h-5"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>}
+  return (
+    <Layout>
+      <section className="text-gray-600 body-font">
+        <div className="container px-5 py-10 mx-auto">
+          {loading ? (
+            <div className="text-center py-10">
+              <div className="spinner-border text-orange-500" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-10 text-red-500">{error}</div>
+          ) : product ? (
+            <div className="lg:flex lg:gap-8 bg-white shadow-lg rounded-2xl overflow-hidden">
+              
+              {/* Product Info (2/3 Width on Large Screens) */}
+              <div className="lg:w-2/3 w-full p-6">
+                
+                {/* Product Image */}
+                <div className="flex justify-center">
+                  <img
+                    alt={product.title}
+                    className="w-full max-h-96 object-cover object-center rounded-lg"
+                    src={product.imageUrl || "https://via.placeholder.com/400"}
+                  />
                 </div>
-            </section>
 
-        </Layout>
-    )
+                {/* Product Details */}
+                <div className="mt-6">
+                  <h2 className="text-sm uppercase text-gray-500 tracking-wide">BYG Food</h2>
+                  <h1 className="text-gray-900 text-2xl sm:text-3xl font-semibold">
+                    {product.title}
+                  </h1>
+
+                  {/* Rating Stars */}
+                  <div className="flex items-center mt-2">
+                    {Array(Math.round(product.rating || 5))
+                      .fill()
+                      .map((_, i) => (
+                        <svg
+                          key={i}
+                          className="w-5 h-5 text-orange-500"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                      ))}
+                    <span className="text-gray-600 ml-2 text-sm">
+                      {product.reviews || 0} Reviews
+                    </span>
+                  </div>
+
+                  {/* Product Description */}
+                  <p className="leading-relaxed mt-3 text-sm sm:text-base">
+                    {product.description}
+                  </p>
+
+                  {/* Price */}
+                  <div className="mt-6">
+                    <span className="text-2xl font-semibold text-gray-900">
+                      ₦{product.price}
+                    </span>
+                  </div>
+
+                  {/* Add to Cart Button (Directly Below Price) */}
+                  <div className="mt-4">
+                    <button
+                      onClick={() => addCart(product)}
+                      className="w-full sm:w-auto text-white bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-lg shadow-md transition-all text-sm"
+                    >
+                      Add To Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cart Section (1/3 Width on Large Screens) */}
+              <div className="lg:w-1/3 w-full p-6 bg-gray-100 rounded-r-2xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-gray-900">Your Cart</h2>
+                  {cartItems.length > 0 && (
+                    <button
+                      onClick={clearCartHandler}
+                      className="text-red-500 text-sm hover:underline"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
+
+                {/* Cart Items */}
+                {cartItems.length === 0 ? (
+                  <p className="text-gray-500 text-center">Cart is empty</p>
+                ) : (
+                  cartItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center bg-white p-3 mb-2 rounded-lg shadow"
+                    >
+                      <div className="flex items-center">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.title}
+                          className="w-12 h-12 object-cover rounded-lg"
+                        />
+                        <div className="ml-3">
+                          <h3 className="text-sm font-medium">{item.title}</h3>
+                          <p className="text-xs text-gray-600">₦{item.price}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeCartItem(item.id)}
+                        className="text-red-500 text-lg font-bold"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))
+                )}
+
+                {/* Continue to Cart Button */}
+                {cartItems.length > 0 && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => navigate("/cart")}
+                      className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg text-sm shadow-md"
+                    >
+                      Continue to Cart
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </section>
+    </Layout>
+  );
 }
 
-export default ProductInfo
+export default ProductInfo;

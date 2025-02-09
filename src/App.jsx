@@ -1,10 +1,12 @@
 import React from 'react'
+// import ScrollToTop from 'react-router-scroll-top';
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
 } from "react-router-dom";
+import ScrollToTop from './components/ScrollToTop';
 
 import Home from './pages/home/Home';
 import Order from './pages/order/Order';
@@ -24,6 +26,7 @@ function App() {
   return (
     <MyState>
       <Router>
+      <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/allproducts" element={<Allproducts />} />

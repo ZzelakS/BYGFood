@@ -174,9 +174,9 @@ function DashboardTab() {
                                             <th scope="col" className="px-6 py-3">
                                                 Address
                                             </th>
-                                            <th scope="col" className="px-6 py-3">
+                                            {/* <th scope="col" className="px-6 py-3">
                                                 Pincode
-                                            </th>
+                                            </th> */}
                                             <th scope="col" className="px-6 py-3">
                                                 Phone Number
                                             </th>
@@ -204,7 +204,7 @@ function DashboardTab() {
                                                 {title}
                                             </td>
                                             <td className="px-6 py-4 text-black " style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                ₹{price}
+                                            ₦{price}
                                             </td>
                                             <td className="px-6 py-4 text-black " style={{ color: mode === 'dark' ? 'white' : '' }}>
                                                {category}

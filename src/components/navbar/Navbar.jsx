@@ -171,14 +171,7 @@ function Navbar() {
                 </div>
 
                 <div className="hidden lg:ml-8 lg:flex">
-                  <a href="#" className="flex items-center text-gray-700 ">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg"
-                      alt=""
-                      className="block h-auto w-5 flex-shrink-0"
-                    />
-                    {/* <span className="ml-3 block text-sm font-medium" style={{ color: mode === 'dark' ? 'white' : '', }}>INDIA</span> */}
-                  </a>
+                  
                 </div>
                 <div className="hidden lg:ml-8 lg:flex">
                   <a href="#" className="flex items-center text-gray-700 ">

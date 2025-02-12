@@ -22,6 +22,8 @@ function ProductCard() {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  console.log("Filtered Products:", product);
+
   const filteredProducts = product
     .filter(
       (obj) =>
@@ -47,7 +49,8 @@ function ProductCard() {
         {/* Updated Grid for 4 Cards Per Row on Large Screens */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map((item, index) => {
-            const { title, price, imageUrl, id } = item;
+            const { title, price, imageUrl, id, isAvailable } = item;
+            console.log(`Product: ${title}, isAvailable:`, typeof isAvailable, isAvailable);
             return (
               <div
                 key={index}
@@ -81,13 +84,17 @@ function ProductCard() {
                     <p className="leading-relaxed mb-3 text-black">₦{price}</p>
 
                     <div className="flex justify-center">
-                      <button
-                        type="button"
-                        onClick={() => addCart(item)}
-                        className="focus:outline-none text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm w-full py-2"
-                      >
-                        Add To Cart
-                      </button>
+                      {isAvailable ? (
+                        <button
+                          type="button"
+                          onClick={() => addCart(item)}
+                          className="focus:outline-none text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm w-full py-2"
+                        >
+                          Add To Cart
+                        </button>
+                      ) : (
+                        <span className="text-red-600 font-bold">Out of Stock</span>
+                      )}
                     </div>
                   </div>
                 </div>

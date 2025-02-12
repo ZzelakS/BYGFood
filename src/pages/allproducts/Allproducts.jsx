@@ -108,41 +108,44 @@ function AllProducts() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {product
-                  .filter((obj) => obj.title.toLowerCase().includes(searchkey))
-                  .filter((obj) => (filterType ? obj.category.toLowerCase() === filterType : true))
-                  .filter(
-                    (obj) =>
-                      (!filterPrice.min || obj.price >= filterPrice.min) &&
-                      (!filterPrice.max || obj.price <= filterPrice.max)
-                  )
-                  .map((item, index) => {
-                    const { title, price, imageUrl, id } = item;
-                    return (
-                      <div
-                        key={index}
-                        className="bg-white rounded-lg border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out cursor-pointer w-full max-w-[320px] mx-auto"
-                        onClick={() => (window.location.href = `/productinfo/${id}`)} // Clicking anywhere navigates
-                      >
-                        <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />
-                        <div className="p-4">
-                          <h2 className="text-sm text-gray-500">BYG Food</h2>
-                          <h1 className="text-lg font-medium text-gray-900 mb-2">{title}</h1>
-                          <p className="text-black-600 font-semibold">₦{price}</p>
+            {product
+              .filter((obj) => obj.title.toLowerCase().includes(searchkey))
+              .filter((obj) => (filterType ? obj.category.toLowerCase() === filterType : true))
+              .filter(
+                (obj) =>
+                  (!filterPrice.min || obj.price >= filterPrice.min) &&
+                  (!filterPrice.max || obj.price <= filterPrice.max)
+              )
+              .map((item, index) => {
+                const { title, price, imageUrl, id, isAvailable } = item;
+                return (
+                  <div
+                    key={index}
+                    className="bg-white rounded-lg border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out cursor-pointer w-full max-w-[320px] mx-auto"
+                    onClick={() => (window.location.href = `/productinfo/${id}`)}
+                  >
+                    <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />
+                    <div className="p-4">
+                      <h2 className="text-sm text-gray-500">BYG Food</h2>
+                      <h1 className="text-lg font-medium text-gray-900 mb-2">{title}</h1>
+                      <p className="text-black-600 font-semibold">₦{price}</p>
 
-                          {/* Add to Cart Button */}
-                          <button
-                            type="button"
-                            onClick={(e) => addCart(e, item)} // Prevents navigation when clicked
-                            className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg w-full hover:bg-orange-700 transition-all"
-                          >
-                            Add To Cart
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
+                      {isAvailable ? (
+                        <button
+                          type="button"
+                          onClick={(e) => addCart(e, item)}
+                          className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg w-full hover:bg-orange-700 transition-all"
+                        >
+                          Add To Cart
+                        </button>
+                      ) : (
+                        <span className="mt-4 text-red-600 font-bold block text-center">Out of Stock</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
             </div>
           </div>
         </div>

@@ -54,7 +54,7 @@ function myState(props) {
     const getProductData = async () => {
         setLoading(true);
         try {
-            const q = query(collection(fireDB, 'products'), orderBy('time'));
+            const q = query(collection(fireDB, 'products'), orderBy('orderIndex'));
             const data = onSnapshot(q, (QuerySnapshot) => {
                 let productArray = [];
                 QuerySnapshot.forEach((doc) => {

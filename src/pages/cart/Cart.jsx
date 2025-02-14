@@ -14,6 +14,14 @@ function Cart() {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => Array.isArray(state.cart.cart) ? state.cart.cart : []);
   console.log(cartItems);
+
+  const formatPrice = (price) => {
+    return price.toLocaleString();
+  };
+
+  const removeCommas = (priceString) => {
+    return Number(priceString.replace(/,/g, ""));
+  };
   
 
 
@@ -34,7 +42,7 @@ function Cart() {
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
-    let temp = cartItems.reduce((sum, item) => sum + parseInt(item.price), 0);
+    let temp = cartItems.reduce((sum, item) => sum + removeCommas(item.price), 0);
     setTotalAmount(temp);
   }, [cartItems]);
 
@@ -50,6 +58,7 @@ function Cart() {
     "Lekki": 2500,
     "Ikoyi": 2000,
     "Others": 2500,
+    "Test": 200,
   };
 
   const handleLocationChange = (selectedLocation) => {
@@ -77,7 +86,7 @@ function Cart() {
       const config = {
         public_key: "FLWPUBK-c47ba9bc2b5e498e9b2da0a081c784c1-X",
         tx_ref: `order_${new Date().getTime()}`,
-        amount: Math.round(grandTotal * 100) / 100,
+        amount: grandTotal,
         currency: "NGN",
         payment_options: "card, banktransfer, ussd",
         customer: { email, phone_number: phoneNumber, name },
@@ -115,7 +124,7 @@ function Cart() {
                 <div className="mt-5 sm:mt-0">
                   <h2 className="text-lg font-bold">{item.title}</h2>
                   <p className="text-sm text-gray-700">{item.description}</p>
-                  <p className="mt-1 text-xs font-semibold text-gray-700">₦{item.price}</p>
+                  <p className="mt-1 text-xs font-semibold text-gray-700">₦{formatPrice(item.price)}</p>
                 </div>
                 <button onClick={() => deleteCart(item)} className="text-red-500">X</button>
               </div>

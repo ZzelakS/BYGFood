@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MyContext from './myContext';
-import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, onSnapshot, orderBy, query, setDoc } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, setDoc, writeBatch, getDocs } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { fireDB } from '../../firebase/FirebaseConfig';
 
@@ -22,11 +22,7 @@ function myState(props) {
         description: null,
         available: true,
         time: Timestamp.now(),
-        date: new Date().toLocaleString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-        })
+        orderIndex: 0
     });
 
     const toggleMode = () => {
@@ -41,9 +37,10 @@ function myState(props) {
         setLoading(true);
         try {
             const productRef = collection(fireDB, 'products');
-            await addDoc(productRef, { ...products, available: products.available ?? true });
+            const snapshot = await getDocs(productRef);
+            const orderIndex = snapshot.size; 
+            await addDoc(productRef, { ...products, available: products.available ?? true, orderIndex });
             toast.success("Product added successfully");
-            setTimeout(() => { window.location.href = '/dashboard'; }, 800);
             getProductData();
         } catch (error) {
             console.log(error);
@@ -54,16 +51,19 @@ function myState(props) {
     const getProductData = async () => {
         setLoading(true);
         try {
-            const q = query(collection(fireDB, 'products'), orderBy('time'));
-            const data = onSnapshot(q, (QuerySnapshot) => {
+            const q = query(collection(fireDB, 'products'), orderBy('orderIndex'));
+            onSnapshot(q, (QuerySnapshot) => {
                 let productArray = [];
                 QuerySnapshot.forEach((doc) => {
                     productArray.push({ ...doc.data(), id: doc.id });
                 });
+                if (productArray.length === 0) {
+                    console.warn("No products found or missing orderIndex field.");
+                }
                 setProduct(productArray);
             });
         } catch (error) {
-            console.log(error);
+            console.log("Error fetching products:", error);
         }
         setLoading(false);
     };
@@ -71,6 +71,22 @@ function myState(props) {
     useEffect(() => {
         getProductData();
     }, []);
+
+    const updateProductOrder = async (updatedProducts) => {
+        setLoading(true);
+        try {
+            const batch = writeBatch(fireDB);
+            updatedProducts.forEach((item, index) => {
+                const productRef = doc(fireDB, 'products', item.id);
+                batch.update(productRef, { orderIndex: index });
+            });
+            await batch.commit();
+            getProductData(); // Ensure the UI updates with latest order
+        } catch (error) {
+            console.error('Error updating product order:', error);
+        }
+        setLoading(false);
+    };
 
     const edithandle = (item) => {
         setProducts(item);
@@ -81,7 +97,6 @@ function myState(props) {
         try {
             await setDoc(doc(fireDB, 'products', products.id), { ...products });
             toast.success("Product updated successfully");
-            setTimeout(() => { window.location.href = '/dashboard'; }, 800);
             getProductData();
         } catch (error) {
             console.log(error);
@@ -107,7 +122,7 @@ function myState(props) {
             products, setProducts, addProduct, product,
             edithandle, updateProduct, deleteProduct, order,
             user, searchkey, setSearchkey, filterType, setFilterType,
-            filterPrice, setFilterPrice
+            filterPrice, setFilterPrice, updateProductOrder
         }}>
             {props.children}
         </MyContext.Provider>

@@ -11,7 +11,7 @@ exports.notifyAdminOnNewOrder = functions.firestore
     const orderData = snapshot.data();
     
     // Define Admin Notification Token (Replace with your admin FCM token)
-    const adminToken = "YOUR_ADMIN_FCM_TOKEN";
+    const adminToken = "eYxqD0nhThQ3PylWBOk2_5:APA91bE-3immRU35H_AymruhRRc5ttG65U202pUB0O_Fy_NK_t6JsPN723NHE1-re-ccMg9r_lOdFbvPihuBYrhNN-RGE7YWM5biociyiOjTZm4no9Dqba8";
 
     // Construct the notification message
     const message = {

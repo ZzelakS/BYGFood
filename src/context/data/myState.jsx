@@ -13,7 +13,7 @@ function myState(props) {
     const [searchkey, setSearchkey] = useState('');
     const [filterType, setFilterType] = useState('');
     const [filterPrice, setFilterPrice] = useState('');
-    
+
     const [products, setProducts] = useState({
         title: null,
         price: null,
@@ -34,23 +34,7 @@ function myState(props) {
         document.body.style.backgroundColor = mode === 'light' ? "rgb(17, 24, 39)" : "white";
     };
 
-    const addProduct = async () => {
-        if (!products.title || !products.price || !products.imageUrl || !products.category || !products.description) {
-            return toast.error("All fields are required");
-        }
-        setLoading(true);
-        try {
-            const productRef = collection(fireDB, 'products');
-            await addDoc(productRef, { ...products, available: products.available ?? true });
-            toast.success("Product added successfully");
-            setTimeout(() => { window.location.href = '/dashboard'; }, 800);
-            getProductData();
-        } catch (error) {
-            console.log(error);
-        }
-        setLoading(false);
-    };
-
+    // Fetch products
     const getProductData = async () => {
         setLoading(true);
         try {
@@ -68,9 +52,56 @@ function myState(props) {
         setLoading(false);
     };
 
+    // Fetch orders
+    const getOrderData = async () => {
+        setLoading(true);
+        try {
+            const q = query(collection(fireDB, 'orders'));
+            const querySnapshot = await getDocs(q);
+            const ordersArray = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            setOrder(ordersArray);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
+        setLoading(false);
+    };
+
+    // Fetch users
+    const getUserData = async () => {
+        setLoading(true);
+        try {
+            const q = query(collection(fireDB, 'users'));
+            const querySnapshot = await getDocs(q);
+            const usersArray = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            setUser(usersArray);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+        setLoading(false);
+    };
+
     useEffect(() => {
         getProductData();
+        getOrderData();
+        getUserData();
     }, []);
+
+    const addProduct = async () => {
+        if (!products.title || !products.price || !products.imageUrl || !products.category || !products.description) {
+            return toast.error("All fields are required");
+        }
+        setLoading(true);
+        try {
+            const productRef = collection(fireDB, 'products');
+            await addDoc(productRef, { ...products, available: products.available ?? true });
+            toast.success("Product added successfully");
+            setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+            getProductData();
+        } catch (error) {
+            console.log(error);
+        }
+        setLoading(false);
+    };
 
     const edithandle = (item) => {
         setProducts(item);

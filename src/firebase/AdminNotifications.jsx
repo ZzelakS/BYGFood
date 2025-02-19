@@ -1,76 +1,93 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { fireDB } from "../firebase/FirebaseConfig";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import notificationSound from "../../public/audio.wav";
+import { fireDB } from "../firebase/FirebaseConfig";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import notificationSound from "../../src/audio.mp3";
 
 const useAdminNotifications = () => {
   const [notifications, setNotifications] = useState([]);
-  const [audio] = useState(new Audio(notificationSound));
-  const navigate = useNavigate();
-  const lastNotifiedOrderRef = useRef(null); // Track last notified order
+  const audioRef = useRef(null);
+  const lastNotifiedTimeRef = useRef(null);
+  const isAudioAllowedRef = useRef(false); // ✅ Track user interaction
 
   useEffect(() => {
-    audio.loop = false; // Ensure sound plays only once per new order
-    
-    const q = query(collection(fireDB, "orders"), orderBy("date", "desc"));
+    audioRef.current = new Audio(notificationSound);
+    audioRef.current.load(); // ✅ Preload the audio file
 
+    // ✅ Listen for user interaction (click/tap) to enable sound
+    const enableAudio = () => {
+      isAudioAllowedRef.current = true;
+      document.removeEventListener("click", enableAudio);
+      document.removeEventListener("touchstart", enableAudio);
+    };
+
+    document.addEventListener("click", enableAudio, { once: true });
+    document.addEventListener("touchstart", enableAudio, { once: true });
+
+    const q = query(collection(fireDB, "orders"), orderBy("date", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (snapshot.empty) return;
+
+      const newNotifications = [];
+
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           const newOrder = change.doc.data();
-          console.log("New order received:", newOrder);
-          console.log("Products data:", newOrder.products);
+          const newOrderTimestamp = new Date(newOrder.date).getTime();
 
-          // Prevent duplicate notifications for the same order
-          if (lastNotifiedOrderRef.current === newOrder.id) return;
-          lastNotifiedOrderRef.current = newOrder.id;
-          
-          const productDetails = Array.isArray(newOrder.products) && newOrder.products.length > 0
-            ? newOrder.products.map(p => `${p.name} (x${p.quantity})`).join(", ")
-            : "No products available";
-          setNotifications((prev) => [
-            ...prev,
-            `New Order! Total: ₦${newOrder.totalAmount}, Products: ${productDetails}`
-          ]);
-          
-          // Play sound only for new orders
-          audio.currentTime = 0;
-          audio.play();
+          if (lastNotifiedTimeRef.current && newOrderTimestamp <= lastNotifiedTimeRef.current) {
+            return;
+          }
+          lastNotifiedTimeRef.current = newOrderTimestamp;
 
-          // Show a popup with order info
-          alert(`New Order Received!\nTotal: ₦${newOrder.totalAmount}\nProducts: ${productDetails}`);
+          let productDetails = "No products available";
+          if (newOrder.cartItems?.length > 0) {
+            productDetails = newOrder.cartItems
+              .map((p, index) => `${index + 1}. ${p.title} (x${p.quantity})`)
+              .join("\n");
+          }
 
-          // Redirect to order details page
-          navigate("/thank-you", { state: { order: newOrder } });
+          const notificationMessage = {
+            id: change.doc.id,
+            message: `🛒 New Order!\n${productDetails}`,
+          };
+
+          newNotifications.push(notificationMessage);
+
+          // ✅ Ensure audio plays only if user has interacted with the page
+          const playSound = () => {
+            if (isAudioAllowedRef.current) {
+              audioRef.current.currentTime = 0;
+              audioRef.current.play().catch((error) => {
+                console.error("Audio Play Error:", error);
+              });
+            }
+          };
+
+          playSound(); // Try playing sound
+
+          // ✅ Show Toast Notification
+          toast.success(notificationMessage.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       });
+
+      if (newNotifications.length > 0) {
+        setNotifications((prev) => [...newNotifications, ...prev]);
+      }
     });
 
     return () => unsubscribe();
-  }, [audio, navigate]);
+  }, []);
 
   return { notifications, setNotifications };
 };
 
-const OrderNotifications = () => {
-  const { notifications, setNotifications } = useAdminNotifications();
-
-  const clearNotifications = () => {
-    setNotifications([]);
-  };
-
-  return (
-    <div>
-      <h2>Order Notifications</h2>
-      <button onClick={clearNotifications}>Clear Notifications</button>
-      <ul>
-        {notifications.map((notif, index) => (
-          <li key={index}>{notif}</li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-export default OrderNotifications;
+export default useAdminNotifications;

@@ -115,51 +115,61 @@ function DashboardTab() {
 
                 {/* Orders Tab */}
                 <TabPanel>
-                    <h1 className="text-center text-3xl font-semibold underline mb-5">Order Details</h1>
-                    <div className="relative overflow-x-auto">
-                        <table className="w-full text-sm text-left text-gray-500">
-                            <thead className="text-xs uppercase bg-gray-200">
-                                <tr>
-                                    <th className="px-6 py-3">S.No</th>
-                                    <th className="px-6 py-3">Order ID</th>
-                                    <th className="px-6 py-3">Customer</th>
-                                    <th className="px-6 py-3">Total</th>
-                                    <th className="px-6 py-3">Date</th>
-                                    <th className="px-6 py-3">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {order.map((item, index) => {
-                                    // Handle date conversion
-                                    let orderDate;
-                                    if (item.date && typeof item.date.toDate === 'function') {
-                                        orderDate = item.date.toDate().toLocaleString();
-                                    } else if (item.date) {
-                                        // If date is stored as a string, parse it
-                                        orderDate = new Date(item.date).toLocaleString();
-                                    } else {
-                                        orderDate = "N/A";
-                                    }
+    <h1 className="text-center text-3xl font-semibold underline mb-5">Order Details</h1>
+    <div className="relative overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500">
+            <thead className="text-xs uppercase bg-gray-200">
+                <tr>
+                    <th className="px-6 py-3">S.No</th>
+                    <th className="px-6 py-3">Products</th>
+                    <th className="px-6 py-3">Customer</th>
+                    <th className="px-6 py-3">Total</th>
+                    <th className="px-6 py-3">Date</th>
+                    <th className="px-6 py-3">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {order.map((item, index) => {
+                    let orderDate;
+                    if (item.date && typeof item.date.toDate === 'function') {
+                        orderDate = item.date.toDate().toLocaleString();
+                    } else if (item.date) {
+                        orderDate = new Date(item.date).toLocaleString();
+                    } else {
+                        orderDate = "N/A";
+                    }
 
-                                    return (
-                                        <tr key={item.id} className="bg-gray-50 border-b">
-                                            <td className="px-6 py-4">{index + 1}.</td>
-                                            <td className="px-6 py-4">{item.id}</td>
-                                            <td className="px-6 py-4">{item.addressInfo.name}</td>
-                                            <td className="px-6 py-4">₦{item.grandTotal}</td>
-                                            <td className="px-6 py-4">{orderDate}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-3 py-1 rounded-lg ${item.paymentStatus === 'successful' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                                                    {item.paymentStatus}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </TabPanel>
+                    return (
+                        <tr key={item.id} className="bg-gray-50 border-b">
+                            <td className="px-6 py-4">{index + 1}.</td>
+                            <td className="px-6 py-4">
+                                {item.cartItems && item.cartItems.length > 0 ? (
+                                    <ul>
+                                        {item.cartItems.map((product, pIndex) => (
+                                            <li key={pIndex} className="mb-1">
+                                                {pIndex + 1}. {product.title} (x{product.quantity})
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    "No products"
+                                )}
+                            </td>
+                            <td className="px-6 py-4">{item.addressInfo.name}</td>
+                            <td className="px-6 py-4">₦{item.grandTotal}</td>
+                            <td className="px-6 py-4">{orderDate}</td>
+                            <td className="px-6 py-4">
+                                <span className={`px-3 py-1 rounded-lg ${item.paymentStatus === 'successful' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                                    {item.paymentStatus}
+                                </span>
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+    </div>
+</TabPanel>
 
                 {/* Users Tab */}
                 <TabPanel>

@@ -100,7 +100,7 @@ function Cart() {
       shippingFee: shipping,
       totalAmount,
       grandTotal,
-      isNew: true, // 🔔 Mark this order as new
+      isNew: true,  // 🔔 Ensure this flag is set to mark the order as new
       date: new Date().toLocaleString("en-US", {
         month: "short",
         day: "2-digit",
@@ -108,35 +108,39 @@ function Cart() {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
-        hour12: true, // Use 12-hour format
+        hour12: true,
       }),
     };
   
     try {
-      // Initialize Paystack payment
       const handler = PaystackPop.setup({
         key: "pk_test_3a33fa1fd5a74313359cda55aa774cf2c369caf9", // Replace with your Paystack public key
-        email: email, // Customer's email
-        amount: grandTotal * 100, // Amount in kobo (e.g., 10000 for ₦100.00)
-        currency: "NGN", // Currency code
-        ref: `order_${new Date().getTime()}`, // Unique reference
+        email: email,
+        amount: grandTotal * 100, 
+        currency: "NGN",
+        ref: `order_${new Date().getTime()}`,
         callback: function (response) {
-          // Payment successful
           if (response.status === "success") {
             toast.success("Payment Successful", { position: "top-center", autoClose: 2000 });
   
-            // Add payment details to orderInfo
             orderInfo.paymentId = response.reference;
             orderInfo.paymentStatus = "successful";
   
-            // Save order to Firestore
-            console.log("Attempting to save order to Firestore:", orderInfo);
+            console.log("Saving order to Firestore:", orderInfo);
             addDoc(collection(fireDB, "orders"), orderInfo)
               .then(() => {
                 console.log("Order saved successfully!");
                 toast.success("Order saved successfully!", { position: "top-center", autoClose: 2000 });
+  
+                // ✅ Send admin notification (if using Firestore or a messaging service)
+                // sendAdminNotification(orderInfo);
+  
+                // ✅ Clear cart after successful order
+                dispatch(clearCart());
+  
+                // ✅ Navigate to Thank You page
                 navigate("/thank-you", { state: { order: orderInfo } });
-            })
+              })
               .catch((error) => {
                 console.error("Error saving order: ", error);
                 toast.error("An error occurred while saving the order. Please try again.", { position: "top-center", autoClose: 2000, theme: "colored" });
@@ -146,18 +150,17 @@ function Cart() {
           }
         },
         onClose: function () {
-          // Payment modal closed
           toast.info("Payment window closed.", { position: "top-center", autoClose: 1000 });
         },
       });
   
-      // Open Paystack payment modal
       handler.openIframe();
     } catch (error) {
       console.error("Error initiating payment: ", error);
       toast.error("An error occurred while processing your payment. Please try again.", { position: "top-center", autoClose: 2000, theme: "colored" });
     }
   };
+  
   return (
     <Layout>
       <div className="min-h-screen bg-gray-100 pt-5 flex flex-col" style={{ backgroundColor: mode === 'dark' ? '#282c34' : '', color: mode === 'dark' ? 'white' : '' }}>

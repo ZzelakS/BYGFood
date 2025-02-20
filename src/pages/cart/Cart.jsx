@@ -112,8 +112,11 @@ function Cart() {
 
   const handleLocationChange = (selectedLocation) => {
     setLocation(selectedLocation);
-    setShipping(shippingFees[selectedLocation] || shippingFees["Others"]);
+    setShipping(
+      selectedLocation === "Test" ? 10 : shippingFees[selectedLocation] || shippingFees["Others"]
+    );
   };
+  
 
   const grandTotal = shipping + totalAmount;
 

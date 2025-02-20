@@ -106,6 +106,7 @@ function Cart() {
     "Victoria Island": 2000,
     "Lekki": 2500,
     "Ikoyi": 2000,
+    "Ogudu": 3000,
     "Others": 2500,
     "Test": 10,
   };

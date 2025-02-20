@@ -56,7 +56,7 @@ function myState(props) {
     const getOrderData = async () => {
         setLoading(true);
         try {
-            const q = query(collection(fireDB, 'orders'));
+            const q = query(collection(fireDB, "orders"), orderBy("createdAt", "desc"));
             const querySnapshot = await getDocs(q);
             const ordersArray = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
             setOrder(ordersArray);

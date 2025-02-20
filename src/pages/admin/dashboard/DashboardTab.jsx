@@ -129,15 +129,18 @@ function DashboardTab() {
                 </tr>
             </thead>
             <tbody>
-                {order.map((item, index) => {
-                    let orderDate;
-                    if (item.date && typeof item.date.toDate === 'function') {
-                        orderDate = item.date.toDate().toLocaleString();
-                    } else if (item.date) {
-                        orderDate = new Date(item.date).toLocaleString();
-                    } else {
-                        orderDate = "N/A";
-                    }
+            {order.map((item, index) => {
+    let orderDate;
+
+    if (item.createdAt && typeof item.createdAt.seconds === "number") {
+        // ✅ Firestore Timestamp: Convert it properly
+        orderDate = new Date(item.createdAt.seconds * 1000).toLocaleString();
+    } else if (item.createdAt) {
+        // ✅ Regular Date String
+        orderDate = new Date(item.createdAt).toLocaleString();
+    } else {
+        orderDate = "N/A";
+    }
 
                     return (
                         <tr key={item.id} className="bg-gray-50 border-b">

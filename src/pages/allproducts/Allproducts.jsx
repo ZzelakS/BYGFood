@@ -139,7 +139,7 @@ function AllProducts() {
                           Add To Cart
                         </button>
                       ) : (
-                        <span className="mt-4 text-red-600 font-bold block text-center">Out of Stock</span>
+                        <span className="mt-4 text-red-600 font-bold block text-center">Restock in 2 hours</span>
                       )}
                     </div>
                   </div>

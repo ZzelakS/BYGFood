@@ -93,7 +93,7 @@ function ProductCard() {
                           Add To Cart
                         </button>
                       ) : (
-                        <span className="text-red-600 font-bold">Out of Stock</span>
+                        <span className="text-red-600 font-bold">Restock in 2 hours</span>
                       )}
                     </div>
                   </div>

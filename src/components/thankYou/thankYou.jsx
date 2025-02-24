@@ -21,7 +21,7 @@ const ThankYou = () => {
         <h1 className="text-2xl font-bold mt-10 text-red-600">⚠️ No Order Found</h1>
         <p className="text-gray-700">It looks like you haven't placed an order.</p>
         <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          className="mt-4 px-4 py-2 bg-orange-500 text-white rounded"
           onClick={() => navigate("/")}
         >
           Go Home

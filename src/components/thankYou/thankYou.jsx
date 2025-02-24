@@ -1,23 +1,18 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { format } from "date-fns"; // ✅ Import date-fns
 import Navbar from "../navbar/Navbar";
 
 const ThankYou = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // ✅ Debugging: Log state to check if data exists
   useEffect(() => {
     console.log("Location State:", location.state);
   }, [location.state]);
 
   const orderInfo = location.state?.order;
 
-// ✅ Convert Firestore Timestamp to JavaScript Date
-const getFormattedDate = (timestamp) => {
-  if (!timestamp || !timestamp.seconds) return "N/A";
-  return format(new Date(timestamp.seconds * 1000), "EEEE, MMMM d, yyyy h:mm a");
-};
 
   if (!orderInfo) {
     return (
@@ -47,7 +42,6 @@ const getFormattedDate = (timestamp) => {
           <p><strong>Name:</strong> {orderInfo.addressInfo.name}</p>
           <p><strong>Email:</strong> {orderInfo.addressInfo.email}</p>
           <p><strong>Total Amount:</strong> ₦{orderInfo.grandTotal}</p>
-          <p><strong>Order Date:</strong> {getFormattedDate(orderInfo?.createdAt)}</p>  {/* ✅ Fixed date formatting */}
 
           <h3 className="font-bold mt-4">Items Ordered:</h3>
           <ul className="list-decimal ml-6 mt-2">

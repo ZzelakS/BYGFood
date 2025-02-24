@@ -87,6 +87,10 @@ function Dashboard() {
                     {/* ✅ Dashboard Statistics */}
                     <div className="flex flex-wrap -m-4 text-center">
                         {[{ count: dataCounts.products, label: 'Products' }, { count: dataCounts.orders, label: 'Orders' }, { count: dataCounts.users, label: 'Users' }].map((stat, index) => (
+
+
+
+
                             <div key={index} className="p-4 md:w-1/4 sm:w-1/2 w-full">
                                 <div className="border-2 shadow-md bg-orange-100 border-orange-300 px-4 py-3 rounded-xl">
                                     <div className="text-orange-500 w-12 h-12 mb-3 inline-block">

@@ -8,7 +8,7 @@ import { updateQuantity, deleteFromCart, clearCart } from '../../redux/cartSlice
 import { toast } from 'react-toastify';
 import { addDoc, collection, updateDoc, doc } from 'firebase/firestore';
 import { fireDB } from '../../firebase/FirebaseConfig';
-import { useHydrogenPayment } from 'hydrogenpay-reactjs';
+// import { usePaystackPayment } from 'react-paystack';
 import { Timestamp } from "firebase/firestore"; // ✅ Import Firestore Timestamp
 function Cart() {
   const [showCheckout, setShowCheckout] = useState(false); // ✅ Fix: Define state
@@ -121,88 +121,87 @@ function Cart() {
 
   const grandTotal = shipping + totalAmount;
 
-
-  // 🏦 Buy Now Function
-  const payment = useHydrogenPayment({
-    amount: grandTotal,
-    email: email,
-    customerName: name,
-    apiKey: "PK_LIVE_1ee7c4a1b038bc1ed86bbf10659ef780",
-    description: "Order Payment",
-    currency: "NGN",
-    onSuccess: async (response) => {
-      console.log("✅ Payment Success Triggered:", response);
-  
-      if (response?.status?.toLowerCase() === "paid" || response?.transactionStatus?.toLowerCase() === "paid") {
-        console.log("✅ Attempting to save order...");
-  
-        if (!cartItems.length) {
-          console.error("❌ Cannot save order: Cart is empty");
-          toast.error("Cannot save order: Cart is empty.");
-          return;
-        }
-  
-        try {
-          const orderRef = await addDoc(collection(fireDB, "orders"), {
-            cartItems,
-            addressInfo: { name, address, email, phoneNumber, location },
-            shippingFee: shipping,
-            totalAmount,
-            grandTotal,
-            paymentStatus: "successful",
-            createdAt: new Date().toISOString(),
-          });
-  
-          console.log("✅ Order saved with ID:", orderRef.id);
-          dispatch(clearCart());
-          toast.success("Payment Successful!");
-  
-          setTimeout(() => {
-            closeModal();
-            navigate("/thank-you", { 
-              state: { 
-                order: {
-                  id: orderRef.id,
-                  cartItems,
-                  addressInfo: { name, address, email, phoneNumber, location },
-                  shippingFee: shipping,
-                  totalAmount,
-                  grandTotal,
-                  paymentStatus: "successful",
-                  createdAt: Timestamp.now(), // ✅ Use Firestore's Timestamp
-                }
-              } 
-            });
-          
-            // ✅ Clear cart AFTER navigation
-            dispatch(clearCart());
-          }, 2000);
-          
-          
-  
-        } catch (error) {
-          console.error("❌ Error saving order: ", error);
-          toast.error("Failed to save order.");
-        }
-      }
-    },
-    onClose: () => {
-      console.log("🚪 Payment gateway closed.");
-      toast.info("Payment was not completed.");
-    }
-  });
-  
-  
-    
-  const buyNow = () => {
+  const buyNow = async () => {
     if ([name, address, email, phoneNumber, location].some((field) => field.trim() === "")) {
-      return toast.error("All fields are required", { position: "top-center" });
+      return toast.error("All fields are required", { position: "top-center", autoClose: 1000, theme: "colored" });
     }
+
+    const orderInfo = {
+      cartItems,
+      addressInfo: { name, address, email, phoneNumber, location },
+      shippingFee: shipping,
+      totalAmount,
+      grandTotal,
+      isNew: true,  // 🔔 Ensure this flag is set to mark the order as new
+      date: new Date().toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      }),
+    };
+
+    try {
+
+      const handler = PaystackPop.setup({
+        key: "pk_test_3a33fa1fd5a74313359cda55aa774cf2c369caf9", // Replace with your Paystack public key
+        email: email,
+        amount: grandTotal * 100, 
+        currency: "NGN",
+        ref: `order_${new Date().getTime()}`,
+        callback: function (response) {
+
+          if (response.status === "success") {
+            toast.success("Payment Successful", { position: "top-center", autoClose: 2000 });
+
+
+            orderInfo.paymentId = response.reference;
+            orderInfo.paymentStatus = "successful";
+
+            console.log("Saving order to Firestore:", orderInfo);
+
+            addDoc(collection(fireDB, "orders"), {
+              ...orderInfo,
+              createdAt: Timestamp.now()
+            })
+            
+              .then(() => {
+                console.log("Order saved successfully!");
+                toast.success("Order saved successfully!", { position: "top-center", autoClose: 2000 });
   
-    console.log("Starting payment process...");
-    payment(); // ✅ Start payment first
+                // ✅ Send admin notification (if using Firestore or a messaging service)
+                // sendAdminNotification(orderInfo);
+  
+                // ✅ Clear cart after successful order
+                dispatch(clearCart());
+  
+                // ✅ Navigate to Thank You page
+                navigate("/thank-you", { state: { order: orderInfo } });
+              })
+              .catch((error) => {
+                console.error("Error saving order: ", error);
+                toast.error("An error occurred while saving the order. Please try again.", { position: "top-center", autoClose: 2000, theme: "colored" });
+              });
+          } else {
+            toast.error("Payment was not successful", { position: "top-center", autoClose: 1000 });
+          }
+        },
+        onClose: function () {
+
+          toast.info("Payment window closed.", { position: "top-center", autoClose: 1000 });
+        },
+      });
+
+
+      handler.openIframe();
+    } catch (error) {
+      console.error("Error initiating payment: ", error);
+      toast.error("An error occurred while processing your payment. Please try again.", { position: "top-center", autoClose: 2000, theme: "colored" });
+    }
   };
-  
   
   
   return (

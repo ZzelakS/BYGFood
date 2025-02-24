@@ -22,6 +22,7 @@ import ProductInfo from './pages/productInfo/ProductInfo';
 import AddProduct from './pages/admin/page/AddProduct';
 import UpdateProduct from './pages/admin/page/UpdateProduct';
 import Allproducts from './pages/allproducts/Allproducts';
+import ContactUs from './pages/contact/Contact';
 
 // Context
 import MyState from './context/data/myState';
@@ -39,6 +40,7 @@ function App() {
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/contact" element={<ContactUs />} />
           <Route path="/productinfo/:id" element={<ProductInfo />} />
 
           {/* Protected Routes (User) */}

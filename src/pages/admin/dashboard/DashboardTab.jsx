@@ -123,53 +123,56 @@ function DashboardTab() {
                     <th className="px-6 py-3">S.No</th>
                     <th className="px-6 py-3">Products</th>
                     <th className="px-6 py-3">Customer</th>
+                    <th className="px-6 py-3">Number</th>
                     <th className="px-6 py-3">Total</th>
                     <th className="px-6 py-3">Date</th>
                     <th className="px-6 py-3">Status</th>
                 </tr>
             </thead>
             <tbody>
-            {order.map((item, index) => {
-    let orderDate;
+    {order.map((item, index) => {
+        let orderDate;
 
-    if (item.createdAt && typeof item.createdAt.seconds === "number") {
-        // ✅ Firestore Timestamp: Convert it properly
-        orderDate = new Date(item.createdAt.seconds * 1000).toLocaleString();
-    } else if (item.createdAt) {
-        // ✅ Regular Date String
-        orderDate = new Date(item.createdAt).toLocaleString();
-    } else {
-        orderDate = "N/A";
-    }
+        if (item.createdAt && typeof item.createdAt.seconds === "number") {
+            // ✅ Firestore Timestamp: Convert it properly
+            orderDate = new Date(item.createdAt.seconds * 1000).toLocaleString();
+        } else if (item.createdAt) {
+            // ✅ Regular Date String
+            orderDate = new Date(item.createdAt).toLocaleString();
+        } else {
+            orderDate = "N/A";
+        }
 
-                    return (
-                        <tr key={item.id} className="bg-gray-50 border-b">
-                            <td className="px-6 py-4">{index + 1}.</td>
-                            <td className="px-6 py-4">
-                                {item.cartItems && item.cartItems.length > 0 ? (
-                                    <ul>
-                                        {item.cartItems.map((product, pIndex) => (
-                                            <li key={pIndex} className="mb-1">
-                                                {pIndex + 1}. {product.title} (x{product.quantity})
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    "No products"
-                                )}
-                            </td>
-                            <td className="px-6 py-4">{item.addressInfo.name}</td>
-                            <td className="px-6 py-4">₦{item.grandTotal}</td>
-                            <td className="px-6 py-4">{orderDate}</td>
-                            <td className="px-6 py-4">
-                                <span className={`px-3 py-1 rounded-lg ${item.paymentStatus === 'successful' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                                    {item.paymentStatus}
-                                </span>
-                            </td>
-                        </tr>
-                    );
-                })}
-            </tbody>
+        return (
+            <tr key={item.id} className="bg-gray-50 border-b">
+                <td className="px-6 py-4">{index + 1}.</td>
+                <td className="px-6 py-4">
+                    {item.cartItems && item.cartItems.length > 0 ? (
+                        <ul>
+                            {item.cartItems.map((product, pIndex) => (
+                                <li key={pIndex} className="mb-1">
+                                    {pIndex + 1}. {product.title} (x{product.quantity})
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        "No products"
+                    )}
+                </td>
+                <td className="px-6 py-4">{item.addressInfo.name}</td>
+                <td className="px-6 py-4">{item.addressInfo.phoneNumber}</td> {/* ✅ Added Phone Number */}
+                <td className="px-6 py-4">₦{item.grandTotal}</td>
+                <td className="px-6 py-4">{orderDate}</td>
+                <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-lg ${item.paymentStatus === 'successful' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                        {item.paymentStatus}
+                    </span>
+                </td>
+            </tr>
+        );
+    })}
+</tbody>
+
         </table>
     </div>
 </TabPanel>

@@ -50,7 +50,11 @@ function ProductCard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map((item, index) => {
             const { title, price, imageUrl, id, isAvailable } = item;
-            console.log(`Product: ${title}, isAvailable:`, typeof isAvailable, isAvailable);
+            console.log(
+              `Product: ${title}, isAvailable:`,
+              typeof isAvailable,
+              isAvailable
+            );
             return (
               <div
                 key={index}
@@ -65,12 +69,14 @@ function ProductCard() {
                 >
                   <div
                     onClick={() => navigate(`/productinfo/${id}`)}
-                    className="cursor-pointer flex justify-center"
+                    className="cursor-pointer flex justify-center rounded-2xl w-full h-52 p-2 hover:scale-105 transition-transform duration-300 ease-in-out"
                   >
                     <img
-                      className="rounded-2xl w-full h-52 object-cover p-2 hover:scale-105 transition-transform duration-300 ease-in-out"
+                      className="rounded-2xl w-full h-52 object-cover"
                       src={imageUrl}
                       alt={title}
+                      onContextMenu={(e) => e.preventDefault()} // Disable right-click
+                      draggable="false" // Prevent drag-and-drop saving
                     />
                   </div>
 
@@ -93,7 +99,9 @@ function ProductCard() {
                           Add To Cart
                         </button>
                       ) : (
-                        <span className="text-red-600 font-bold">Restock in 2 hours</span>
+                        <span className="text-red-600 font-bold">
+                          Restock in 2 hours
+                        </span>
                       )}
                     </div>
                   </div>

@@ -90,11 +90,15 @@ function ProductInfo() {
             <div className="lg:flex lg:gap-8 bg-white shadow-lg rounded-2xl overflow-hidden">
               {/* Product Info */}
               <div className="lg:w-2/3 w-full p-6">
-                <div className="flex justify-center">
+                <div className="flex justify-center"
+                onContextMenu={(e) => e.preventDefault()} // Disable right-click
+                >
                   <img
                     alt={product.title}
-                    className="w-full max-h-96 object-cover object-center rounded-lg"
+                    className="w-full max-h-96 object-cover object-center rounded-lg pointer-events: none;
+  user-select: none;"
                     src={product.imageUrl || "https://via.placeholder.com/400"}
+                    draggable="false"
                   />
                 </div>
 

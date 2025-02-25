@@ -1,13 +1,22 @@
-import React, { useContext, useEffect } from 'react';
-import Layout from '../../components/layout/Layout';
-import myContext from '../../context/data/myContext';
-import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../../redux/cartSlice';
-import { toast } from 'react-toastify';
+import React, { useContext, useEffect } from "react";
+import Layout from "../../components/layout/Layout";
+import myContext from "../../context/data/myContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../redux/cartSlice";
+import { toast } from "react-toastify";
 
 function AllProducts() {
   const context = useContext(myContext);
-  const { mode, product, searchkey, setSearchkey, filterType, setFilterType, filterPrice, setFilterPrice } = context;
+  const {
+    mode,
+    product,
+    searchkey,
+    setSearchkey,
+    filterType,
+    setFilterType,
+    filterPrice,
+    setFilterPrice,
+  } = context;
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cart); // Corrected selector
@@ -15,11 +24,11 @@ function AllProducts() {
   const addCart = (event, product) => {
     event.stopPropagation(); // Prevents navigation when clicking "Add to Cart"
     dispatch(addToCart(product));
-    toast.success('Added to cart');
+    toast.success("Added to cart");
   };
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
+    localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
   useEffect(() => {
@@ -44,28 +53,46 @@ function AllProducts() {
                       type="number"
                       placeholder="Min"
                       className="border rounded-lg px-4 py-2 w-full"
-                      onChange={(e) => setFilterPrice({ ...filterPrice, min: e.target.value })}
+                      onChange={(e) =>
+                        setFilterPrice({ ...filterPrice, min: e.target.value })
+                      }
                     />
                     <input
                       type="number"
                       placeholder="Max"
                       className="border rounded-lg px-4 py-2 w-full"
-                      onChange={(e) => setFilterPrice({ ...filterPrice, max: e.target.value })}
+                      onChange={(e) =>
+                        setFilterPrice({ ...filterPrice, max: e.target.value })
+                      }
                     />
                   </div>
                 </div>
 
                 {/* Filter by Category */}
                 <div>
-                  <h3 className="text-sm font-medium mb-2">Filter by Category</h3>
+                  <h3 className="text-sm font-medium mb-2">
+                    Filter by Category
+                  </h3>
                   <ul className="space-y-2">
-                    {['All', 'Platter', 'Main', 'Burger', 'Milkshakes', 'Cocktails', 'Mocktails', 'Fresh Juice', 'Soft Drinks'].map((category) => (
+                    {[
+                      "All",
+                      "Platter",
+                      "Main",
+                      "Burger",
+                      "Milkshakes",
+                      "Cocktails",
+                      "Mocktails",
+                      "Fresh Juice",
+                      "Soft Drinks",
+                    ].map((category) => (
                       <li key={category} className="flex items-center">
                         <input
                           type="radio"
                           id={category}
                           name="category"
-                          value={category === 'All' ? '' : category.toLowerCase()}
+                          value={
+                            category === "All" ? "" : category.toLowerCase()
+                          }
                           onChange={(e) => setFilterType(e.target.value)}
                           className="mr-2"
                         />
@@ -84,7 +111,7 @@ function AllProducts() {
               <div className="flex flex-wrap items-center justify-between mb-6">
                 <h1
                   className="text-2xl sm:text-3xl font-medium title-font text-gray-900"
-                  style={{ color: mode === 'dark' ? 'white' : '' }}
+                  style={{ color: mode === "dark" ? "white" : "" }}
                 >
                   Products
                 </h1>
@@ -98,7 +125,9 @@ function AllProducts() {
                   />
                   <select
                     className="border rounded-lg px-4 py-2 text-sm"
-                    onChange={(e) => console.log('Sort Option:', e.target.value)}
+                    onChange={(e) =>
+                      console.log("Sort Option:", e.target.value)
+                    }
                   >
                     <option value="default">Sort By: Default</option>
                     <option value="price">Price</option>
@@ -108,44 +137,67 @@ function AllProducts() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {product
-              .filter((obj) => obj.title.toLowerCase().includes(searchkey))
-              .filter((obj) => (filterType ? obj.category.toLowerCase() === filterType : true))
-              .filter(
-                (obj) =>
-                  (!filterPrice.min || obj.price >= filterPrice.min) &&
-                  (!filterPrice.max || obj.price <= filterPrice.max)
-              )
-              .map((item, index) => {
-                const { title, price, imageUrl, id, isAvailable } = item;
-                return (
-                  <div
-                    key={index}
-                    className="bg-white rounded-lg border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out cursor-pointer w-full max-w-[320px] mx-auto"
-                    onClick={() => (window.location.href = `/productinfo/${id}`)}
-                  >
-                    <img src={imageUrl} alt={title} className="w-full h-52 object-cover" />
-                    <div className="p-4">
-                      <h2 className="text-sm text-gray-500">BYG Food</h2>
-                      <h1 className="text-lg font-medium text-gray-900 mb-2">{title}</h1>
-                      <p className="text-black-600 font-semibold">₦{price}</p>
-
-                      {isAvailable ? (
-                        <button
-                          type="button"
-                          onClick={(e) => addCart(e, item)}
-                          className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg w-full hover:bg-orange-700 transition-all"
+                {product
+                  .filter((obj) => obj.title.toLowerCase().includes(searchkey))
+                  .filter((obj) =>
+                    filterType
+                      ? obj.category.toLowerCase() === filterType
+                      : true
+                  )
+                  .filter(
+                    (obj) =>
+                      (!filterPrice.min || obj.price >= filterPrice.min) &&
+                      (!filterPrice.max || obj.price <= filterPrice.max)
+                  )
+                  .map((item, index) => {
+                    const { title, price, imageUrl, id, isAvailable } = item;
+                    return (
+                      <div
+                        key={index}
+                        className="bg-white rounded-lg border shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out cursor-pointer w-full max-w-[320px] mx-auto"
+                        onClick={() =>
+                          (window.location.href = `/productinfo/${id}`)
+                        }
+                      >
+                        <div
+                          className="relative w-full h-52"
+                          onContextMenu={(e) => e.preventDefault()} // Disable right-click
                         >
-                          Add To Cart
-                        </button>
-                      ) : (
-                        <span className="mt-4 text-red-600 font-bold block text-center">Restock in 2 hours</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
+                          <img
+                            src={imageUrl}
+                            alt={title}
+                            className="w-full h-52 object-cover pointer-events-none user-select-none"
+                            draggable="false"
+                          />
+                        </div>
+
+                        <div className="p-4">
+                          <h2 className="text-sm text-gray-500">BYG Food</h2>
+                          <h1 className="text-lg font-medium text-gray-900 mb-2">
+                            {title}
+                          </h1>
+                          <p className="text-black-600 font-semibold">
+                            ₦{price}
+                          </p>
+
+                          {isAvailable ? (
+                            <button
+                              type="button"
+                              onClick={(e) => addCart(e, item)}
+                              className="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg w-full hover:bg-orange-700 transition-all"
+                            >
+                              Add To Cart
+                            </button>
+                          ) : (
+                            <span className="mt-4 text-red-600 font-bold block text-center">
+                              Restock in 2 hours
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
         </div>

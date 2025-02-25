@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import myContext from '../../../context/data/myContext';
 import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
@@ -11,8 +11,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 function DashboardTab() {
     const context = useContext(myContext);
     const { mode, product, edithandle, deleteProduct, order, user } = context;
-    console.log('Context order:', order);
-
+    const [expandedOrder, setExpandedOrder] = useState(null);
 
     const toggleAvailability = async (id, currentStatus) => {
         try {
@@ -21,6 +20,10 @@ function DashboardTab() {
         } catch (error) {
             console.error('Error updating product availability:', error);
         }
+    };
+
+    const toggleOrderExpansion = (orderId) => {
+        setExpandedOrder(expandedOrder === orderId ? null : orderId);
     };
 
     return (
@@ -117,66 +120,67 @@ function DashboardTab() {
 
                 {/* Orders Tab */}
                 <TabPanel>
-    <h1 className="text-center text-3xl font-semibold underline mb-5">Order Details</h1>
-    <div className="relative overflow-x-auto">
-        {console.log('Order data:', order)} {/* Add this here */}
-        <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs uppercase bg-gray-200">
-                <tr>
-                    <th className="px-6 py-3">S.No</th>
-                    <th className="px-6 py-3">Products</th>
-                    <th className="px-6 py-3">Customer</th>
-                    <th className="px-6 py-3">Number</th>
-                    <th className="px-6 py-3">Total</th>
-                    <th className="px-6 py-3">Date</th>
-                    <th className="px-6 py-3">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {order.map((item, index) => {
-                    console.log('Order item:', item); // Add this inside the map
-                    let orderDate;
-
-                    if (item.createdAt && typeof item.createdAt.seconds === "number") {
-                        orderDate = new Date(item.createdAt.seconds * 1000).toLocaleString();
-                    } else if (item.createdAt) {
-                        orderDate = new Date(item.createdAt).toLocaleString();
-                    } else {
-                        orderDate = "N/A";
-                    }
-
-                    return (
-                        <tr key={item.id} className="bg-gray-50 border-b">
-                            <td className="px-6 py-4">{index + 1}.</td>
-                            <td className="px-6 py-4">
-                                {item.cartItems && item.cartItems.length > 0 ? (
-                                    <ul>
-                                        {item.cartItems.map((product, pIndex) => (
-                                            <li key={pIndex} className="mb-1">
-                                                {pIndex + 1}. {product.title} (x{product.quantity})
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    "No products"
-                                )}
-                            </td>
-                            <td className="px-6 py-4">{item.addressInfo.name}</td>
-                            <td className="px-6 py-4">{item.addressInfo.phoneNumber}</td>
-                            <td className="px-6 py-4">₦{item.grandTotal}</td>
-                            <td className="px-6 py-4">{orderDate}</td>
-                            <td className="px-6 py-4">
-                                <span className={`px-3 py-1 rounded-lg ${item.paymentStatus === 'successful' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                                    {item.paymentStatus}
-                                </span>
-                            </td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
-    </div>
-</TabPanel>
+                    <h1 className="text-center text-3xl font-semibold underline mb-5">Order Details</h1>
+                    <div className="relative overflow-x-auto">
+                        <table className="w-full text-sm text-left text-gray-500">
+                            <thead className="text-xs uppercase bg-gray-200">
+                                <tr>
+                                    <th className="px-6 py-3">S.No</th>
+                                    <th className="px-6 py-3">Customer</th>
+                                    <th className="px-6 py-3">Number</th>
+                                    <th className="px-6 py-3">Total</th>
+                                    <th className="px-6 py-3">Status</th>
+                                    <th className="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {order.map((item, index) => (
+                                    <React.Fragment key={item.id}>
+                                        <tr className="bg-gray-50 border-b" onClick={() => toggleOrderExpansion(item.id)}>
+                                            <td className="px-6 py-4">{index + 1}.</td>
+                                            <td className="px-6 py-4">{item.addressInfo.name}</td>
+                                            <td className="px-6 py-4">{item.addressInfo.phoneNumber}</td>
+                                            <td className="px-6 py-4">₦{item.grandTotal}</td>
+                                            <td className="px-6 py-4">
+                                                <span className={`px-3 py-1 rounded-lg ${item.paymentStatus === 'successful' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                                                    {item.paymentStatus}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button className="text-blue-500">View Details</button>
+                                            </td>
+                                        </tr>
+                                        {expandedOrder === item.id && (
+                                            <tr>
+                                                <td colSpan="5">
+                                                    <div className="p-5 bg-white rounded-lg shadow-lg">
+                                                        <h2 className="text-2xl font-semibold mb-4">Order Information</h2>
+                                                        <p><strong>Order ID:</strong> {item.id}</p>
+                                                        <p><strong>Customer:</strong> {item.addressInfo.name}</p>
+                                                        <p><strong>Phone:</strong> {item.addressInfo.phoneNumber}</p>
+                                                        <p><strong>Address:</strong> {item.addressInfo.address}</p>
+                                                        <p><strong>Total:</strong> ₦{item.grandTotal}</p>
+                                                        <p><strong>Payment Status:</strong> {item.paymentStatus}</p>
+                                                        <p><strong>Order Date:</strong> {item.createdAt && new Date(item.createdAt.seconds * 1000).toLocaleString()}</p>
+                                                        <h3 className="text-xl font-semibold mt-4">Items:</h3>
+                                                        <ul>
+                                                            {item.cartItems.map((product, pIndex) => (
+                                                                <li key={pIndex} className="flex items-center gap-4 mb-2">
+                                                                    <img src={product.imageUrl} alt={product.title} className="w-12 h-12 object-cover rounded" />
+                                                                    {product.title} (x{product.quantity})
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </TabPanel>
 
 
                 {/* Users Tab */}

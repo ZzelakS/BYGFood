@@ -61,7 +61,7 @@ const ContactUs = () => {
           <h2 className="text-2xl font-semibold">Our Office</h2>
           <p>14B, Karimu Kotun, Victoria Island, Lagos, Nigeria</p>
           <p className="text-lg">Email: backyardgrill91@gmail.com</p>
-          <p className="text-lg">Phone: +234-9167417758</p>
+          <p className="text-lg">Phone: +234-9168220671</p>
           <iframe
             title="Office Location"
             src="https://www.google.com/maps?q=14B+Karimu+Kotun,+Victoria+Island,+Lagos+Nigeria&output=embed"

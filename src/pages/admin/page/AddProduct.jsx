@@ -48,13 +48,22 @@ function AddProduct() {
                         />
                     </div>
                     <div>
-                        <textarea cols="30" rows="10" name='title'
+                        <textarea cols="30" rows="10" name='description'
                          value={products.description}
                          onChange={(e) => setProducts({ ...products, description: e.target.value })}
                             className=' bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none'
                             placeholder='Product desc'>
 
                         </textarea>
+                    </div>
+                    <div>
+                        <input type="number"
+                            value={products.orderIndex}
+                            onChange={(e) => setProducts({ ...products, orderIndex: e.target.value })}
+                            name='orderIndex'
+                            className=' bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none'
+                            placeholder='Product order index'
+                        />
                     </div>
                     <div className=' flex justify-center mb-3'>
                         <button

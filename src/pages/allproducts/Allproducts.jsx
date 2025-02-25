@@ -59,7 +59,7 @@ function AllProducts() {
                 <div>
                   <h3 className="text-sm font-medium mb-2">Filter by Category</h3>
                   <ul className="space-y-2">
-                    {['All', 'Platter', 'Main', 'Burger', 'Milkshakes', 'Cocktails', 'Mocktails', 'Fresh Juice'].map((category) => (
+                    {['All', 'Platter', 'Main', 'Burger', 'Milkshakes', 'Cocktails', 'Mocktails', 'Fresh Juice', 'Soft Drinks'].map((category) => (
                       <li key={category} className="flex items-center">
                         <input
                           type="radio"

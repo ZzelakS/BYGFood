@@ -28,27 +28,43 @@ function DashboardTab() {
 
     const handlePrint = (order) => {
         const printWindow = window.open('', '', 'width=600,height=600');
-        printWindow.document.write('<html><head><title>Order Receipt</title></head><body>');
-        printWindow.document.write(`<h1>Order Information</h1>`);
-        printWindow.document.write(`<p><strong>Order ID:</strong> ${order.id}</p>`);
-        printWindow.document.write(`<p><strong>Customer:</strong> ${order.addressInfo.name}</p>`);
-        printWindow.document.write(`<p><strong>Phone:</strong> ${order.addressInfo.phoneNumber}</p>`);
-        printWindow.document.write(`<p><strong>Address:</strong> ${order.addressInfo.address}</p>`);
-        printWindow.document.write(`<p><strong>Total:</strong> ₦${order.grandTotal}</p>`);
-        printWindow.document.write(`<p><strong>Payment Status:</strong> ${order.paymentStatus}</p>`);
-        printWindow.document.write(`<p><strong>Order Date:</strong> ${order.createdAt && new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>`);
-        printWindow.document.write('<h3>Items:</h3>');
-        printWindow.document.write('<ul>');
-        order.cartItems.forEach(product => {
-            printWindow.document.write(`<li>${product.title} (x${product.quantity})</li>`);
-        });
-        printWindow.document.write('</ul>');
-        printWindow.document.write('</body></html>');
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Order Receipt</title>
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+                h1, h3 { text-align: center; }
+                ul { list-style: none; padding: 0; }
+                li { margin-bottom: 8px; }
+                .order-info { border: 1px solid #ccc; padding: 10px; border-radius: 8px; }
+                .order-info p { margin: 5px 0; }
+              </style>
+            </head>
+            <body>
+              <h1>Order Receipt</h1>
+              <div class="order-info">
+                <p><strong>Order ID:</strong> ${order.id}</p>
+                <p><strong>Customer:</strong> ${order.addressInfo.name}</p>
+                <h3>Items</h3>
+                <ul>
+                  ${order.cartItems.map((product) => `<li>${product.title} (x${product.quantity})</li>`).join('')}
+                </ul>
+                <p><strong>Phone:</strong> ${order.addressInfo.phoneNumber}</p>
+                <p><strong>Address:</strong> ${order.addressInfo.address}</p>
+                <p><strong>Total:</strong> ₦${order.grandTotal}</p>
+                <p><strong>Payment Status:</strong> ${order.paymentStatus}</p>
+                <p><strong>Order Date:</strong> ${
+                  order.createdAt && new Date(order.createdAt.seconds * 1000).toLocaleString()
+                }</p>
+              </div>
+            </body>
+          </html>
+        `);
         printWindow.document.close();
         printWindow.print();
     };
-
-
+    
     return (
         <div className="container mx-auto">
             <Tabs defaultIndex={0}>
@@ -179,11 +195,11 @@ function DashboardTab() {
                                                         <button onClick={() => handlePrint(item)} className="bg-orange-500 text-white px-4 py-2 rounded-lg mb-4">Print Order</button>
                                                         <p><strong>Order ID:</strong> {item.id}</p>
                                                         <p><strong>Customer:</strong> {item.addressInfo.name}</p>
+                                                        <p><strong>Order Date:</strong> {item.createdAt && new Date(item.createdAt.seconds * 1000).toLocaleString()}</p>
                                                         <p><strong>Phone:</strong> {item.addressInfo.phoneNumber}</p>
                                                         <p><strong>Address:</strong> {item.addressInfo.address}</p>
                                                         <p><strong>Total:</strong> ₦{item.grandTotal}</p>
                                                         <p><strong>Payment Status:</strong> {item.paymentStatus}</p>
-                                                        <p><strong>Order Date:</strong> {item.createdAt && new Date(item.createdAt.seconds * 1000).toLocaleString()}</p>
                                                         <h3 className="text-xl font-semibold mt-4">Items:</h3>
                                                         <ul>
                                                             {item.cartItems.map((product, pIndex) => (

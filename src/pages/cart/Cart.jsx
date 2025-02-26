@@ -147,7 +147,7 @@ function Cart() {
     try {
 
       const handler = PaystackPop.setup({
-        key: "pk_live_fa2ab8e0e2d789c5c8dcbba4105c987cfa10bb5e", // Replace with your Paystack public key
+        key: "pk_test_3a33fa1fd5a74313359cda55aa774cf2c369caf9", // Replace with your Paystack public key
         email: email,
         amount: grandTotal * 100, 
         currency: "NGN",

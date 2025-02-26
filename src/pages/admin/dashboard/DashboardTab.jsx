@@ -26,6 +26,29 @@ function DashboardTab() {
         setExpandedOrder(expandedOrder === orderId ? null : orderId);
     };
 
+    const handlePrint = (order) => {
+        const printWindow = window.open('', '', 'width=600,height=600');
+        printWindow.document.write('<html><head><title>Order Receipt</title></head><body>');
+        printWindow.document.write(`<h1>Order Information</h1>`);
+        printWindow.document.write(`<p><strong>Order ID:</strong> ${order.id}</p>`);
+        printWindow.document.write(`<p><strong>Customer:</strong> ${order.addressInfo.name}</p>`);
+        printWindow.document.write(`<p><strong>Phone:</strong> ${order.addressInfo.phoneNumber}</p>`);
+        printWindow.document.write(`<p><strong>Address:</strong> ${order.addressInfo.address}</p>`);
+        printWindow.document.write(`<p><strong>Total:</strong> ₦${order.grandTotal}</p>`);
+        printWindow.document.write(`<p><strong>Payment Status:</strong> ${order.paymentStatus}</p>`);
+        printWindow.document.write(`<p><strong>Order Date:</strong> ${order.createdAt && new Date(order.createdAt.seconds * 1000).toLocaleString()}</p>`);
+        printWindow.document.write('<h3>Items:</h3>');
+        printWindow.document.write('<ul>');
+        order.cartItems.forEach(product => {
+            printWindow.document.write(`<li>${product.title} (x${product.quantity})</li>`);
+        });
+        printWindow.document.write('</ul>');
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    };
+
+
     return (
         <div className="container mx-auto">
             <Tabs defaultIndex={0}>
@@ -127,7 +150,6 @@ function DashboardTab() {
                                 <tr>
                                     <th className="px-6 py-3">S.No</th>
                                     <th className="px-6 py-3">Customer</th>
-                                    <th className="px-6 py-3">Number</th>
                                     <th className="px-6 py-3">Total</th>
                                     <th className="px-6 py-3">Status</th>
                                     <th className="px-6 py-3">Actions</th>
@@ -139,7 +161,6 @@ function DashboardTab() {
                                         <tr className="bg-gray-50 border-b" onClick={() => toggleOrderExpansion(item.id)}>
                                             <td className="px-6 py-4">{index + 1}.</td>
                                             <td className="px-6 py-4">{item.addressInfo.name}</td>
-                                            <td className="px-6 py-4">{item.addressInfo.phoneNumber}</td>
                                             <td className="px-6 py-4">₦{item.grandTotal}</td>
                                             <td className="px-6 py-4">
                                                 <span className={`px-3 py-1 rounded-lg ${item.paymentStatus === 'successful' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
@@ -155,6 +176,7 @@ function DashboardTab() {
                                                 <td colSpan="5">
                                                     <div className="p-5 bg-white rounded-lg shadow-lg">
                                                         <h2 className="text-2xl font-semibold mb-4">Order Information</h2>
+                                                        <button onClick={() => handlePrint(item)} className="bg-orange-500 text-white px-4 py-2 rounded-lg mb-4">Print Order</button>
                                                         <p><strong>Order ID:</strong> {item.id}</p>
                                                         <p><strong>Customer:</strong> {item.addressInfo.name}</p>
                                                         <p><strong>Phone:</strong> {item.addressInfo.phoneNumber}</p>

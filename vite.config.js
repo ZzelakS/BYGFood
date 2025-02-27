@@ -6,4 +6,9 @@ export default defineConfig({
   esbuild: {
     loader: 'jsx', // Valid loader value
   },
+  server: {
+    mimeTypes: {
+      'css': 'text/css'
+    }
+  }
 });

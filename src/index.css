@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-      @apply font-regal; /* Uses Playfair Display from tailwind.config.js */
-    }
+  html {
+    text-size-adjust: 100%; /* Standard */
+    -webkit-text-size-adjust: 100%; /* Webkit fallback */
+    -ms-text-size-adjust: 100%; /* IE fallback */
   }
-  
+
+  body {
+    @apply font-regal; /* Uses Playfair Display from tailwind.config.js */
+  }
+}

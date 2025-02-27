@@ -27,72 +27,10 @@ import ContactUs from './pages/contact/Contact';
 // Context
 import MyState from './context/data/myState';
 
-function App() {
-  return (
-    <MyState>
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/allproducts" element={<Allproducts />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/thank-you" element={<ThankYou />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/productinfo/:id" element={<ProductInfo />} />
-
-          {/* Protected Routes (User) */}
-          <Route
-            path="/order"
-            element={
-              <ProtectedRoute>
-                <Order />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Protected Routes (Admin) */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRouteForAdmin>
-                <Dashboard />
-              </ProtectedRouteForAdmin>
-            }
-          />
-          <Route
-            path="/addproduct"
-            element={
-              <ProtectedRouteForAdmin>
-                <AddProduct />
-              </ProtectedRouteForAdmin>
-            }
-          />
-          <Route
-            path="/updateproduct"
-            element={
-              <ProtectedRouteForAdmin>
-                <UpdateProduct />
-              </ProtectedRouteForAdmin>
-            }
-          />
-
-          {/* 404 Page */}
-          <Route path="/*" element={<NoPage />} />
-        </Routes>
-        <ToastContainer />
-      </Router>
-    </MyState>
-  );
-}
-
-export default App;
-
 // Protected Route for Users
 export const ProtectedRoute = ({ children }) => {
   const user = localStorage.getItem('user');
+  console.log('User:', user); // Debugging
   if (user) {
     return children;
   } else {
@@ -103,11 +41,75 @@ export const ProtectedRoute = ({ children }) => {
 // Protected Route for Admin
 const ProtectedRouteForAdmin = ({ children }) => {
   const admin = JSON.parse(localStorage.getItem('user'));
-
-  // Check if admin exists and has the correct email
+  console.log('Admin:', admin); // Debugging
   if (admin && admin.user && admin.user.email === 'backyardgrill91@gmail.com') {
     return children;
   } else {
     return <Navigate to="/login" />;
   }
 };
+
+function App() {
+  return (
+    <MyState>
+  <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <ScrollToTop />
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<Home />} />
+      <Route path="/allproducts" element={<Allproducts />} />
+      <Route path="/cart" element={<Cart />} />
+      <Route path="/thank-you" element={<ThankYou />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/contact" element={<ContactUs />} />
+      <Route path="/productinfo/:id" element={<ProductInfo />} />
+
+      {/* Protected Routes (User) */}
+      <Route
+        path="/order"
+        element={
+          <ProtectedRoute>
+            <Order />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Protected Routes (Admin) */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRouteForAdmin>
+            <Dashboard />
+          </ProtectedRouteForAdmin>
+        }
+      />
+      <Route
+        path="/addproduct"
+        element={
+          <ProtectedRouteForAdmin>
+            <AddProduct />
+          </ProtectedRouteForAdmin>
+        }
+      />
+      <Route
+        path="/updateproduct"
+        element={
+          <ProtectedRouteForAdmin>
+            <UpdateProduct />
+          </ProtectedRouteForAdmin>
+        }
+      />
+
+      {/* 404 Page */}
+      <Route path="/*" element={<NoPage />} />
+    </Routes>
+    <ToastContainer />
+  </Router>
+</MyState>
+
+
+  );
+}
+
+export default App;

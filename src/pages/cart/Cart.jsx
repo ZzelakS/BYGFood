@@ -108,7 +108,6 @@ function Cart() {
     "Ikoyi": 2000,
     "Ogudu": 3000,
     "Others": 2500,
-    "Test": 10,
   };
 
   const handleLocationChange = (selectedLocation) => {

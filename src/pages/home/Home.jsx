@@ -7,6 +7,7 @@ import ProductCard from '../../components/productCard/ProductCard'
 // import Track from '../../components/track/Track'
 import Testimonial from '../../components/testimonial/Testimonial'
 import { Link } from 'react-router-dom'
+import PartnersCarousel from '../../components/partners/Partners'
 
 
 function Home() {
@@ -20,6 +21,7 @@ function Home() {
           <button className=' bg-gray-300 px-5 py-2 rounded-xl'>See more</button>
         </Link>
       </div>
+      <PartnersCarousel />
       {/* <Track /> */}
       {/* <Testimonial /> */}
     </Layout>

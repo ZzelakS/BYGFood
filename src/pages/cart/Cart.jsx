@@ -106,8 +106,8 @@ function Cart() {
     "Victoria Island": 2000,
     "Lekki": 2500,
     "Ikoyi": 2000,
-    "Ogudu": 3000,
-    "Others": 5000,
+    "Ogudu": 4000,
+    "Others": 6000,
   };
 
   const handleLocationChange = (selectedLocation) => {

@@ -103,11 +103,27 @@ function Cart() {
   const [shipping, setShipping] = useState(0);
 
   const shippingFees = {
-    "Victoria Island": 2000,
-    "Lekki": 2500,
-    "Ikoyi": 2000,
-    "Ogudu": 4000,
-    "Others": 6000,
+    "Victoria Island": 3000,
+    "Ikoyi": 3000,
+    "Lekki Phase 1": 4000,
+    "Ikota": 4000,
+    "Chevron": 5000,
+    "Agungi": 4500,
+    "Jakande-Lekki": 4500,
+    "Ajah": 6000,
+    "Sangotedo": 7000,
+    "Awoyaya": 8000,
+    "Ikeja": 6000,
+    "Ikotun": 7000,
+    "Isolo": 6000,
+    "Yaba": 5000,
+    "Egbeda": 5000,
+    "Surulere": 5000,
+    "Magodo-Shangisha": 6000,
+    "Berger": 7000,
+    "Palm Grove": 5000,
+    "Others - Island": 10000,
+    "Others - Mainland": 10000,
   };
 
   const handleLocationChange = (selectedLocation) => {

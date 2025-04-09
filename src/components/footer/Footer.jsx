@@ -65,9 +65,9 @@ function Footer() {
                 <h1 className=' text-2xl font-bold text-black  px-2 py-1 rounded' style={{ color: mode === 'dark' ? 'white' : '', }}>BYG Food</h1>
               </div>
             </Link>
-            <p className="text-sm text-gray-500 sm:ml-6 sm:mt-0 mt-4" style={{ color: mode === 'dark' ? 'white' : '' }}>© 2025 Lamar
+            <a href="https://api.whatsapp.com/send?phone=2349062288078&text=Hello,%20I'm%20interested%20in%20your%20services!" rel="noopener noreferrer" target="_blank" className="text-sm text-gray-500 sm:ml-6 sm:mt-0 mt-4" style={{ color: mode === 'dark' ? 'white' : '' }}>© 2025 Lamar
               {/* <a href="https://twitter.com/knyttneve" rel="noopener noreferrer" className="text-gray-600 ml-1" target="_blank" style={{ color: mode === 'dark' ? 'white' : '' }}>www.ebharat.com</a> */}
-            </p>
+            </a>
             <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
               <a className="text-gray-500">
                 <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} className="w-5 h-5" viewBox="0 0 24 24">

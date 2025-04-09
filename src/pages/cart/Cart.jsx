@@ -106,36 +106,65 @@ function Cart() {
   const [location, setLocation] = useState("");
   const [shipping, setShipping] = useState(0);
 
-  const shippingFees = {
-    "Victoria Island": 3000,
-    "Ikoyi": 3000,
-    "Lekki Phase 1": 4000,
-    "Ikota": 4000,
-    "Chevron": 5000,
-    "Agungi": 4500,
-    "Jakande-Lekki": 4500,
-    "Ajah": 6000,
-    "Sangotedo": 7000,
-    "Awoyaya": 8000,
-    "Ikeja": 6000,
-    "Ikotun": 7000,
-    "Isolo": 6000,
-    "Yaba": 5000,
-    "Egbeda": 5000,
-    "Surulere": 5000,
-    "Magodo-Shangisha": 6000,
-    "Berger": 7000,
-    "Palm Grove": 5000,
-    "Others - Island": 10000,
-    "Others - Mainland": 10000,
-  };
+  // Define shipping fees
+const shippingFees = {
+  "Victoria Island": 3000,
+  "Ikoyi": 3000,
+  "Lekki Phase 1": 4000,
+  "Ikota": 4000,
+  "Chevron": 5000,
+  "Agungi": 4500,
+  "Jakande-Lekki": 4500,
+  "Ajah": 6000,
+  "Sangotedo": 7000,
+  "Awoyaya": 8000,
+  "Ikeja": 6000,
+  "Ikotun": 7000,
+  "Isolo": 6000,
+  "Yaba": 5000,
+  "Egbeda": 5000,
+  "Surulere": 5000,
+  "Magodo-Shangisha": 6000,
+  "Berger": 7000,
+  "Palm Grove": 5000,
+  "Others - Island": 10000,
+  "Others - Mainland": 10000,
+};
 
-  const handleLocationChange = (selectedLocation) => {
-    setLocation(selectedLocation);
-    setShipping(
-      selectedLocation === "Test" ? 10 : shippingFees[selectedLocation] || shippingFees["Others"]
-    );
-  };
+// 👇 Remove old/invalid location
+useEffect(() => {
+  const savedLocation = localStorage.getItem("location");
+
+  if (savedLocation && !shippingFees[savedLocation]) {
+    localStorage.removeItem("location");
+    console.log("Old location removed from localStorage:", savedLocation);
+  }
+}, []);
+
+// 👇 Restore location if it's still valid
+useEffect(() => {
+  const savedLocation = localStorage.getItem("location");
+  if (savedLocation && shippingFees[savedLocation]) {
+    setLocation(savedLocation);
+    setShipping(shippingFees[savedLocation]);
+  }
+}, []);
+
+// 👇 Save location to localStorage on change
+const handleLocationChange = (selectedLocation) => {
+  setLocation(selectedLocation);
+
+  if (shippingFees[selectedLocation]) {
+    setShipping(shippingFees[selectedLocation]);
+    localStorage.setItem("location", selectedLocation);
+  } else {
+    setShipping(0);
+    localStorage.removeItem("location");
+    toast.warning("Invalid location selected", { position: "top-center" });
+  }
+};
+
+
   
 
   const grandTotal = shipping + totalAmount;

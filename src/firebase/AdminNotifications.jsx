@@ -41,7 +41,7 @@ const useAdminNotifications = () => {
           }
           lastNotifiedTimeRef.current = newOrderTimestamp;
 
-          let productDetails = "No products available!";
+          let productDetails = "No products available";
           if (newOrder.cartItems?.length > 0) {
             productDetails = newOrder.cartItems
               .map((p, index) => `${index + 1}. ${p.title} (x${p.quantity})`)

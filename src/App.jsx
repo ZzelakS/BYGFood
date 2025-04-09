@@ -12,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // Pages
 import Home from './pages/home/Home';
 import Order from './pages/order/Order';
-// import Cart from './pages/cart/Cart';
+import Cart from './pages/cart/Cart';
 import ThankYou from "./components/thankYou/thankYou.jsx";
 import Dashboard from './pages/admin/dashboard/Dashboard';
 import NoPage from './pages/nopage/NoPage';

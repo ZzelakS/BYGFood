@@ -22,6 +22,10 @@ function Cart() {
   const [showPayButton, setShowPayButton] = useState(false); // ✅ Control payment visibility
 
 
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
+  
 
 
   // 🛒 Calculate total cost

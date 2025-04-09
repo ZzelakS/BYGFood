@@ -143,13 +143,29 @@ export default function Modal({
                               className=" border outline-0 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 bg-gray-100"
                             >
                               <option value="">Select Location</option>
-                              <option value="VI">Victoria Island</option>
-                              <option value="Lekki">Lekki</option>
-                              <option value="Ikoyi">
-                                Ikoyi
-                              </option>
-                              <option value="Others">Others</option>
-                              <option value="Test">Test</option>
+                              <option value="Victoria Island">Victoria Island</option>
+                              <option value="Ikoyi">Ikoyi</option>
+                              <option value="Lekki Phase 1">Lekki Phase 1</option>
+                              <option value="Ikota">Ikota</option>
+                              <option value="Chevron">Chevron</option>
+                              <option value="Agungi">Agungi</option>
+                              <option value="Jakande-Lekki">Jakande-Lekki</option>
+                              <option value="Ajah">Ajah</option>
+                              <option value="Sangotedo">Sangotedo</option>
+                              <option value="Awoyaya">Awoyaya</option>
+                              <option value="Ikeja">Ikeja</option>
+                              <option value="Ikotun">Ikotun</option>
+                              <option value="Isolo">Isolo</option>
+                              <option value="Yaba">Yaba</option>
+                              <option value="Egbeda">Egbeda</option>
+                              <option value="Surulere">Surulere</option>
+                              <option value="Magodo-Shangisha">Magodo-Shangisha</option>
+                              <option value="Berger">Berger</option>
+                              <option value="Palm Grove">Palm Grove</option>
+                              <option value="Others - Island">Others - Island</option>
+                              <option value="Others - Mainland">Others - Mainland</option>
+                              {/* <option value="Others">Others</option>
+                              <option value="Test">Test</option> */}
                             </select>
                           </form>
                           <button
